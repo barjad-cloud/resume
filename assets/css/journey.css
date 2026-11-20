@@ -1,0 +1,652 @@
+/* ==========================================================================
+   DBC Resume — Journey Shelf, Avatar Runner & Interactive Micro-Story
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+  #header-journey-shelf {
+    height: 0;
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    border-bottom: 0 solid transparent;
+    flex-shrink: 0;
+    transition:
+      height 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      max-height 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 200ms ease,
+      visibility 200ms ease,
+      border-color 200ms ease;
+  }
+
+  .resume-container.is-scrolled #header-journey-shelf {
+    height: 60px;
+    max-height: 60px;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    border-bottom: 1px solid var(--ctx-border-light);
+  }
+
+  .resume-container.is-scrolled #header-journey-shelf.is-avatar-off,
+  :root[data-avatar='off'] .resume-container.is-scrolled #header-journey-shelf {
+    height: 3px !important;
+    max-height: 3px !important;
+    border-bottom: none !important;
+  }
+
+  #header-journey-shelf.is-avatar-off .header-avatar-track,
+  :root[data-avatar='off'] #header-journey-shelf .header-avatar-track {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   Dedicated Journey Shelf (Option 1: Sub-Header between header and scroll body)
+   Reveals smoothly only when header is compact (.resume-container.is-scrolled)
+   ========================================================================== */
+.header-journey-shelf {
+  position: relative;
+  width: 100%;
+  height: 0;
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  background: var(--ctx-bg-card, #ffffff);
+  border-bottom: 0 solid transparent;
+  flex-shrink: 0;
+  z-index: 35;
+  overflow: visible;
+  transition:
+    height 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    max-height 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 200ms ease,
+    visibility 200ms ease,
+    border-color 200ms ease;
+}
+
+.resume-container.is-scrolled .header-journey-shelf {
+  height: 60px;
+  max-height: 60px;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  border-bottom: 1px solid var(--ctx-border-light, #e2e8f0);
+}
+
+/* When avatar journey is OFF, collapse shelf to just the slim reading progress bar (3px) with NO reserved height */
+.resume-container.is-scrolled .header-journey-shelf.is-avatar-off {
+  height: 3px;
+  max-height: 3px;
+  border-bottom: none;
+}
+
+.header-journey-shelf.is-avatar-off .header-avatar-track {
+  display: none !important;
+}
+
+/* Integrated Reading Progress Bar along the Shelf Bottom */
+.header-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: var(--ctx-border-light, #e2e8f0);
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.header-progress-bar {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--ctx-accent, #2563eb), var(--ctx-accent-hover, #1d4ed8));
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 60ms linear;
+}
+
+/* ==========================================================================
+   Journey Avatar Track & Runner (Walking on the shelf progress line)
+   Kinematics accelerated via GPU (transform: translateX) & reactive props
+   ========================================================================== */
+.header-avatar-track {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 3px;
+  height: 54px;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.header-avatar-runner {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 34px;
+  height: 54px;
+  will-change: left, transform;
+  pointer-events: none;
+  transition: transform 60ms linear;
+}
+
+.header-avatar-runner.is-disabled {
+  display: none !important;
+}
+
+/* Graphic container & SVG (resting at base of runner) */
+.avatar-graphic-container {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 35px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: auto;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.daniel-avatar-svg {
+  width: 32px;
+  height: 35px;
+  display: block;
+  overflow: visible;
+  filter: drop-shadow(0 2px 4px rgba(15, 23, 42, 0.16));
+  transition: transform 140ms ease;
+}
+
+.avatar-graphic-container:hover .daniel-avatar-svg {
+  transform: translateY(-2px) scale(1.06);
+}
+
+.avatar-graphic-container:focus-visible {
+  outline: 2px solid var(--ctx-accent);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+/* Walking Bobbing Animation (Active while scrolling) */
+@keyframes avatar-bobbing {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-2px);
+  }
+}
+
+.header-avatar-runner.is-walking .daniel-avatar-svg {
+  animation: avatar-bobbing 0.22s infinite alternate ease-in-out;
+}
+
+/* Easter Egg Bounce Animation */
+@keyframes avatar-bounce {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  30% {
+    transform: translateY(-8px) scale(1.08, 0.94);
+  }
+  60% {
+    transform: translateY(2px) scale(0.96, 1.04);
+  }
+}
+
+.header-avatar-runner.is-bouncing .daniel-avatar-svg {
+  animation: avatar-bounce 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ==========================================================================
+   Modular Props Layers (Toggled by [data-active-section])
+   ========================================================================== */
+.avatar-prop {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(3px) scale(0.85);
+  transform-origin: center center;
+  transition:
+    opacity 120ms ease-out,
+    transform 120ms ease-out,
+    visibility 120ms;
+}
+
+[data-active-section='profile'] .prop-profile,
+[data-active-section='highlights'] .prop-highlights,
+[data-active-section='stack'] .prop-stack,
+[data-active-section='experience'] .prop-experience,
+[data-active-section='projects'] .prop-projects,
+[data-active-section='education'] .prop-education,
+[data-active-section='languages'] .prop-languages,
+.header-avatar-runner[data-state='complete'] .prop-complete {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+/* Theme adaptation for SVG blazer */
+.avatar-blazer {
+  fill: var(--ctx-accent, #2563eb);
+}
+
+:root[data-theme='dark'] .avatar-blazer,
+:root[data-theme='daniel'] .avatar-blazer {
+  fill: var(--ctx-accent, #60a5fa);
+}
+
+/* ==========================================================================
+   Micro-Story Speech Bubble (Classic Comic Style Floating Above Daniel)
+   Cleanly housed inside the 60px shelf with downward tail & integrated CTA
+   ========================================================================== */
+.avatar-speech-bubble {
+  position: absolute;
+  bottom: 37px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ctx-surface, #ffffff);
+  color: var(--ctx-text-primary, #0f172a);
+  border: 1px solid var(--ctx-border-light, #e2e8f0);
+  border-radius: 8px;
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 550;
+  line-height: 1.32;
+  white-space: nowrap;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.1);
+  pointer-events: auto;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease,
+    border-color 140ms ease;
+}
+
+.avatar-speech-bubble[hidden] {
+  display: none !important;
+}
+
+/* Speech bubble arrow pointing DOWN toward Daniel's head */
+.avatar-speech-bubble::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--ctx-surface, #ffffff) transparent transparent transparent;
+}
+
+/* Arrow border outline */
+.avatar-speech-bubble::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: var(--ctx-border-light, #e2e8f0) transparent transparent transparent;
+}
+
+/* Edge Clamping near 0% (Left-side alignment at page start) */
+.header-avatar-runner[data-edge='left'] .avatar-speech-bubble {
+  left: 0;
+  transform: none;
+}
+
+.header-avatar-runner[data-edge='left'] .avatar-speech-bubble::after,
+.header-avatar-runner[data-edge='left'] .avatar-speech-bubble::before {
+  left: 17px;
+  transform: translateX(-50%);
+}
+
+/* Edge Clamping near 100% (Right-side alignment at page end) */
+.header-avatar-runner[data-edge='right'] .avatar-speech-bubble {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+
+.header-avatar-runner[data-edge='right'] .avatar-speech-bubble::after,
+.header-avatar-runner[data-edge='right'] .avatar-speech-bubble::before {
+  left: auto;
+  right: 17px;
+  transform: translateX(50%);
+}
+
+.avatar-speech-bubble.is-easter-egg {
+  background: var(--ctx-accent-light, #eff6ff);
+  border-color: var(--ctx-accent, #2563eb);
+  color: var(--ctx-accent, #1d4ed8);
+}
+
+.avatar-speech-bubble.is-easter-egg::after {
+  border-color: var(--ctx-accent-light, #eff6ff) transparent transparent transparent;
+}
+
+/* ==========================================================================
+   Finish-Line "Contact Me" Sign (Cartel integrado en SVG con texto superpuesto)
+   The visual cartel (frame, wood sheet, pole, rivets, shadows) is vector-drawn
+   inside the SVG. On top sits only the text/button overlay (#avatar-contact-sign).
+   ========================================================================== */
+.header-avatar-runner[data-state='complete'] {
+  width: 152px;
+  height: 54px;
+}
+
+.header-avatar-runner[data-state='complete'] .avatar-graphic-container {
+  left: auto;
+  right: 0;
+  transform: none;
+  width: 152px;
+  height: 52px;
+}
+
+.header-avatar-runner[data-state='complete'] .daniel-avatar-svg {
+  width: 152px;
+  height: 52px;
+}
+
+.header-avatar-runner[data-state='complete'] .avatar-graphic-container:hover .daniel-avatar-svg {
+  transform: translateY(-2px);
+}
+
+/* Hide other props when in complete state so only the cartel shows */
+.header-avatar-runner[data-state='complete'] .avatar-prop:not(.prop-complete) {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: translateY(3px) scale(0.85) !important;
+}
+
+/* Cartel Text Overlay Button (Sitting directly on top of the SVG inner placard) */
+.avatar-contact-sign {
+  position: absolute;
+  left: 5.2%;
+  top: 14.6%;
+  width: 57.8%;
+  height: 39.6%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  z-index: 50;
+  pointer-events: auto;
+  user-select: none;
+  touch-action: manipulation;
+  overflow: visible;
+  animation: sign-fade-in 0.25s ease-out;
+}
+
+.avatar-contact-sign[hidden] {
+  display: none !important;
+}
+
+@keyframes sign-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.avatar-contact-sign .sign-icon {
+  font-size: 13px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.avatar-contact-sign .contact-sign-text {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ctx-accent, #2563eb);
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.avatar-contact-sign .sign-arrow {
+  font-size: 11px;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: transform 140ms ease;
+}
+
+/* Hover and focus interactions */
+.header-avatar-runner[data-state='complete']:hover .cartel-sheet,
+.avatar-contact-sign:hover ~ .avatar-graphic-container .cartel-sheet {
+  fill: var(--ctx-accent-light, #eff6ff);
+  stroke: var(--ctx-accent, #2563eb);
+}
+
+.header-avatar-runner[data-state='complete']:hover .sign-arrow,
+.avatar-contact-sign:hover .sign-arrow {
+  transform: translateX(2.5px);
+}
+
+.avatar-contact-sign:focus-visible {
+  outline: 2px solid var(--ctx-accent, #2563eb);
+  outline-offset: 1px;
+  border-radius: 4px;
+}
+
+/* Dark theme adaptation */
+[data-theme='dark'] .avatar-contact-sign .contact-sign-text {
+  color: #38bdf8;
+}
+
+[data-theme='dark'] .cartel-sheet {
+  fill: #0f172a;
+  stroke: #b45309;
+}
+
+[data-theme='dark'] .header-avatar-runner[data-state='complete']:hover .cartel-sheet {
+  fill: #1e293b;
+  stroke: #38bdf8;
+}
+
+/* ==========================================================================
+   Drawer Achievement Badge
+   ========================================================================== */
+.drawer-achievement-badge {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 15px;
+  vertical-align: middle;
+  animation: badge-pulse 2.4s infinite ease-in-out;
+}
+
+@keyframes badge-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.22);
+  }
+}
+
+/* ==========================================================================
+   Pure CSS Confetti Particles
+   ========================================================================== */
+.confetti-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 60;
+  animation: confetti-burst 1.1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes confetti-burst {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--confetti-x, 0px), var(--confetti-y, -40px))
+      rotate(var(--confetti-r, 360deg)) scale(0.4);
+  }
+}
+
+.header-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.header-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.profile-photo {
+  width: 100px;
+  height: 120px;
+  border-radius: 8px;
+  object-fit: cover;
+  object-position: top center;
+  border: 2px solid var(--ctx-border);
+  background: #ffffff;
+  transition:
+    width 200ms ease,
+    height 200ms ease;
+}
+
+.header-qr-trigger {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: inline-flex;
+  border-radius: 8px;
+  outline-offset: 3px;
+  transition: transform 120ms ease;
+}
+
+.header-qr-trigger:hover .qr-code {
+  border-color: var(--ctx-accent);
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.25);
+  transform: scale(1.02);
+}
+
+.header-qr-trigger:focus-visible {
+  outline: 2px solid var(--ctx-focus-ring);
+}
+
+.qr-code {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border: 2px solid var(--ctx-border);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 4px;
+  transition:
+    width 200ms ease,
+    height 200ms ease;
+}
+
+h1 {
+  font-size: 25px;
+  color: var(--ctx-primary);
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: 800;
+  line-height: 1.2;
+  transition: font-size 200ms ease;
+}
+
+.subtitle {
+  font-size: 14.5px;
+  color: var(--ctx-accent);
+  margin-bottom: 8px;
+  font-weight: 700;
+  transition:
+    font-size 200ms ease,
+    margin-bottom 200ms ease;
+}
+
+.contact-info {
+  font-size: 12px;
+  color: var(--ctx-text-muted);
+  line-height: 1.6;
+}
+
+.contact-info a {
+  color: var(--ctx-accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.contact-info a:hover {
+  text-decoration: underline;
+}
+
+.endorsement-note {
+  font-style: italic;
+  color: var(--ctx-secondary);
+  font-weight: 500;
+}
+
+/* Journey Speech Bubble Clamping & Tails on Mobile */
+@media (max-width: 640px) {
+  .avatar-speech-bubble:not([hidden]) {
+    display: inline-flex;
+    bottom: 35px;
+    padding: 2.5px 7px;
+    font-size: 10px;
+    line-height: 1.25;
+    max-width: min(260px, calc(100vw - 44px));
+    white-space: normal;
+    text-align: center;
+    border-radius: 7px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.14);
+  }
+
+  .avatar-speech-bubble[hidden] {
+    display: none !important;
+  }
+
+  .avatar-speech-bubble .avatar-speech-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .avatar-speech-bubble::after {
+    border-width: 4px;
+  }
+
+  .avatar-speech-bubble::before {
+    border-width: 5px;
+  }
+}

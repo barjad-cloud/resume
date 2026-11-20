@@ -1,0 +1,16 @@
+{
+  "name": "Daniel Barja Centeno — Resume",
+  "short_name": "DBC Resume",
+  "description": "Full-Stack Web Developer & Application Analyst Resume",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "./assets/img/daniel_barja_photo.png",
+      "sizes": "223x275",
+      "type": "image/png"
+    }
+  ]
+}

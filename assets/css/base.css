@@ -1,0 +1,277 @@
+/* ==========================================================================
+   DBC Resume — Base, Reset, App-Shell Layout & Accessibility
+   ========================================================================== */
+
+::selection {
+  background: var(--ctx-selection-bg);
+  color: var(--ctx-selection-text);
+}
+
+/* Base Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 24px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ctx-text-main);
+  line-height: 1.5;
+  background-color: var(--ctx-bg-page);
+  font-size: 13px;
+  min-height: 100dvh;
+  overflow-x: clip;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.svg-sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.profile-photo-wrapper {
+  display: contents;
+}
+
+/* Subtle Thin Scrollbar Styling */
+.drawer-inner,
+.resume-scroll-body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ctx-scrollbar-thumb) var(--ctx-scrollbar-track);
+  scrollbar-gutter: stable;
+}
+
+.drawer-inner::-webkit-scrollbar,
+.resume-scroll-body::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.drawer-inner::-webkit-scrollbar-track,
+.resume-scroll-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.drawer-inner::-webkit-scrollbar-thumb,
+.resume-scroll-body::-webkit-scrollbar-thumb {
+  background: var(--ctx-scrollbar-thumb);
+  border-radius: 999px;
+}
+
+/* Focus Visible (WCAG 2.2 AA) */
+:focus-visible {
+  outline: 2.5px solid var(--ctx-focus-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skip Link */
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 12px;
+  z-index: 1200;
+  background: var(--ctx-primary);
+  color: var(--ctx-bg-card);
+  padding: 8px 14px;
+  border-radius: var(--ctx-radius-sm);
+  font-weight: 700;
+  font-size: 12.5px;
+  text-decoration: none;
+  transition: top 140ms ease;
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+/* Page Shell Base & Desktop Layout */
+/* ==========================================================================
+   Main Page Shell & Desktop Full-Viewport App-Shell Layout
+   ========================================================================== */
+.page-shell {
+  padding: 20px 24px;
+  transition: margin-left var(--ctx-drawer-transition);
+}
+
+@media (min-width: 1024px) {
+  html,
+  body {
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .page-shell {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 20px 28px;
+  }
+
+  .resume-container {
+    height: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .resume-scroll-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-behavior: smooth;
+    scroll-padding-top: 16px;
+  }
+}
+
+/* Base Resume Container Shell */
+/* ==========================================================================
+   Resume Container Shell (.resume-container)
+   ========================================================================== */
+.resume-container {
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+  background: var(--ctx-bg-card);
+  border-radius: var(--ctx-radius-card);
+  box-shadow: var(--ctx-shadow-card);
+  border: 1px solid var(--ctx-border);
+  position: relative;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease;
+}
+
+/* Mobile Shell (< 1024px) */
+@media (max-width: 1023px) {
+  html,
+  body {
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .page-shell {
+    height: 100dvh;
+    margin-left: 0;
+    padding: 6px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .resume-container {
+    height: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid var(--ctx-border);
+  }
+
+  .resume-scroll-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 640px) {
+  .page-shell {
+    padding: 6px;
+  }
+
+  .resume-container {
+    border-radius: 10px;
+  }
+}
+
+/* ==========================================================================
+   Accessible Toast Live Region
+   ========================================================================== */
+.toast-region {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1150;
+  pointer-events: none;
+}
+
+.toast-message {
+  background: var(--ctx-toast-bg);
+  color: var(--ctx-toast-text);
+  padding: 9px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.toast-message.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   ATS Semantic Layer — Dark-Mode Safe
+   ========================================================================== */
+.ats-semantic-layer {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  color: transparent;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Reduced Motion (WCAG 2.2 / EN 301 549)
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html,
+  .resume-scroll-body {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .header-journey-shelf,
+  .header-progress,
+  .header-avatar-track {
+    display: none !important;
+  }
+}

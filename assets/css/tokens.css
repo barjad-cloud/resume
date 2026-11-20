@@ -1,0 +1,159 @@
+/* ==========================================================================
+   Daniel Barja Centeno — Web & Print-Ready Interactive Resume
+   Architecture: Desktop App-Shell (100dvh + Internal Scroll + Sticky Section Shells)
+   Zero-Build CUBE/Token CSS + Print-First A4 + WCAG 2.2 AA
+   Canonical Tokens: --ctx-* (SSOT with assets/js/app.js)
+   ========================================================================== */
+
+:root {
+  color-scheme: light dark;
+
+  /* Layout & Drawer Context Tokens */
+  --ctx-drawer-width: 284px;
+  --ctx-drawer-transition: 240ms cubic-bezier(0.22, 1, 0.36, 1);
+  --ctx-radius-card: 14px;
+  --ctx-radius-shell: 10px;
+  --ctx-radius-sm: 6px;
+  --ctx-font-scale: 1;
+
+  /* Light Palette (Default & Print Base) */
+  --ctx-primary: #0f172a;
+  --ctx-secondary: #1e293b;
+  --ctx-accent: #2563eb;
+  --ctx-accent-hover: #1d4ed8;
+  --ctx-accent-soft: #eff6ff;
+  --ctx-on-accent: #ffffff;
+  --ctx-selection-bg: #2563eb;
+  --ctx-selection-text: #ffffff;
+  --ctx-whatsapp: #15803d;
+  --ctx-whatsapp-hover: #166534;
+  --ctx-whatsapp-soft: #f0fdf4;
+  --ctx-text-main: #334155;
+  --ctx-text-muted: #475569;
+  --ctx-bg-page: #dde5f0;
+  --ctx-bg-card: #ffffff;
+  --ctx-bg-scroll: #f1f5f9;
+  --ctx-bg-shell: #ffffff;
+  --ctx-bg-shell-header: #f8fafc;
+  --ctx-bg-drawer: #f8fafc;
+  --ctx-bg-subtle: #f8fafc;
+  --ctx-border: #cbd5e1;
+  --ctx-border-light: #e2e8f0;
+  --ctx-scrollbar-thumb: #94a3b8;
+  --ctx-scrollbar-track: transparent;
+  --ctx-shadow-card:
+    0 12px 32px -6px rgba(15, 23, 42, 0.14), 0 4px 12px -4px rgba(15, 23, 42, 0.08);
+  --ctx-shadow-shell: 0 1px 3px rgba(15, 23, 42, 0.05);
+  --ctx-shadow-scroll: 0 6px 16px -6px rgba(15, 23, 42, 0.16);
+  --ctx-shadow-drawer: 4px 0 24px rgba(15, 23, 42, 0.12);
+  --ctx-focus-ring: #2563eb;
+  --ctx-toast-bg: #0f172a;
+  --ctx-toast-text: #f8fafc;
+}
+
+/* Explicit Dark Theme */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --ctx-primary: #f1f5f9;
+  --ctx-secondary: #e2e8f0;
+  --ctx-accent: #60a5fa;
+  --ctx-accent-hover: #93c5fd;
+  --ctx-accent-soft: rgba(59, 130, 246, 0.16);
+  --ctx-on-accent: #0f172a;
+  --ctx-selection-bg: #60a5fa;
+  --ctx-selection-text: #0f172a;
+  --ctx-whatsapp: #4ade80;
+  --ctx-whatsapp-hover: #86efac;
+  --ctx-whatsapp-soft: rgba(34, 197, 94, 0.14);
+  --ctx-text-main: #cbd5e1;
+  --ctx-text-muted: #94a3b8;
+  --ctx-bg-page: #070d19;
+  --ctx-bg-card: #0f172a;
+  --ctx-bg-scroll: #0b1220;
+  --ctx-bg-shell: #111c30;
+  --ctx-bg-shell-header: #162238;
+  --ctx-bg-drawer: #0f172a;
+  --ctx-bg-subtle: #1e293b;
+  --ctx-border: #334155;
+  --ctx-border-light: #1e293b;
+  --ctx-scrollbar-thumb: #475569;
+  --ctx-shadow-card: 0 14px 36px -6px rgba(0, 0, 0, 0.65), 0 6px 14px -6px rgba(0, 0, 0, 0.5);
+  --ctx-shadow-shell: 0 2px 6px rgba(0, 0, 0, 0.28);
+  --ctx-shadow-scroll: 0 8px 20px -6px rgba(0, 0, 0, 0.65);
+  --ctx-shadow-drawer: 6px 0 28px rgba(0, 0, 0, 0.55);
+  --ctx-focus-ring: #93c5fd;
+  --ctx-toast-bg: #f8fafc;
+  --ctx-toast-text: #0f172a;
+}
+
+/* System Dark Theme */
+@media (prefers-color-scheme: dark) {
+  :root[data-theme='system'] {
+    color-scheme: dark;
+    --ctx-primary: #f1f5f9;
+    --ctx-secondary: #e2e8f0;
+    --ctx-accent: #60a5fa;
+    --ctx-accent-hover: #93c5fd;
+    --ctx-accent-soft: rgba(59, 130, 246, 0.16);
+    --ctx-on-accent: #0f172a;
+    --ctx-selection-bg: #60a5fa;
+    --ctx-selection-text: #0f172a;
+    --ctx-whatsapp: #4ade80;
+    --ctx-whatsapp-hover: #86efac;
+    --ctx-whatsapp-soft: rgba(34, 197, 94, 0.14);
+    --ctx-text-main: #cbd5e1;
+    --ctx-text-muted: #94a3b8;
+    --ctx-bg-page: #070d19;
+    --ctx-bg-card: #0f172a;
+    --ctx-bg-scroll: #0b1220;
+    --ctx-bg-shell: #111c30;
+    --ctx-bg-shell-header: #162238;
+    --ctx-bg-drawer: #0f172a;
+    --ctx-bg-subtle: #1e293b;
+    --ctx-border: #334155;
+    --ctx-border-light: #1e293b;
+    --ctx-scrollbar-thumb: #475569;
+    --ctx-shadow-card: 0 14px 36px -6px rgba(0, 0, 0, 0.65), 0 6px 14px -6px rgba(0, 0, 0, 0.5);
+    --ctx-shadow-shell: 0 2px 6px rgba(0, 0, 0, 0.28);
+    --ctx-shadow-scroll: 0 8px 20px -6px rgba(0, 0, 0, 0.65);
+    --ctx-shadow-drawer: 6px 0 28px rgba(0, 0, 0, 0.55);
+    --ctx-focus-ring: #93c5fd;
+    --ctx-toast-bg: #f8fafc;
+    --ctx-toast-text: #0f172a;
+  }
+}
+
+/* Favorito Daniel Theme — Barja Software Studio™ Identity (Obsidian Charcoal + BSS Emerald) */
+:root[data-theme='daniel'] {
+  color-scheme: dark;
+  --ctx-primary: #f8fafc;
+  --ctx-secondary: #e2e8f0;
+  --ctx-accent: #00d26a;
+  --ctx-accent-hover: #00e875;
+  --ctx-accent-soft: rgba(0, 210, 106, 0.12);
+  --ctx-on-accent: #000000;
+  --ctx-selection-bg: #00d26a;
+  --ctx-selection-text: #000000;
+  --ctx-whatsapp: #00d26a;
+  --ctx-whatsapp-hover: #00e875;
+  --ctx-whatsapp-soft: rgba(0, 210, 106, 0.12);
+  --ctx-text-main: #cbd5e1;
+  --ctx-text-muted: #94a3b8;
+  --ctx-bg-page: #0c0e10;
+  --ctx-bg-card: #16191c;
+  --ctx-bg-scroll: #121517;
+  --ctx-bg-shell: #16191c;
+  --ctx-bg-shell-header: #1e2227;
+  --ctx-bg-drawer: #16191c;
+  --ctx-bg-subtle: #1e2227;
+  --ctx-border: rgba(255, 255, 255, 0.1);
+  --ctx-border-light: rgba(255, 255, 255, 0.07);
+  --ctx-scrollbar-thumb: #2e363e;
+  --ctx-shadow-card: 0 12px 32px rgba(0, 0, 0, 0.65), 0 4px 12px rgba(0, 0, 0, 0.5);
+  --ctx-shadow-shell: 0 4px 12px rgba(0, 0, 0, 0.35);
+  --ctx-shadow-scroll: 0 8px 20px -4px rgba(0, 0, 0, 0.7);
+  --ctx-shadow-drawer: 6px 0 28px rgba(0, 0, 0, 0.6);
+  --ctx-focus-ring: #00e875;
+  --ctx-toast-bg: #00d26a;
+  --ctx-toast-text: #000000;
+}

@@ -1,0 +1,370 @@
+/* ==========================================================================
+   DBC Resume — Native <dialog> Modals & Command Palette
+   ========================================================================== */
+
+/* =============================================================================
+   Native <dialog> Modals (QR Modal & Command Palette ⌘K) [CORE-01..04], [PROACT-02]
+   ============================================================================= */
+
+.app-dialog {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: auto;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: visible;
+  color: var(--ctx-text-main);
+}
+
+.app-dialog::backdrop {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  cursor: pointer;
+}
+
+/* Contact & QR Modal Card */
+.contact-modal-card,
+.qr-modal-card {
+  background: var(--ctx-bg-card, #ffffff);
+  border: 1px solid var(--ctx-border, #e2e8f0);
+  border-radius: 16px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.28);
+  padding: 24px;
+  width: 640px;
+  max-width: 92vw;
+  position: relative;
+  color: var(--ctx-text-primary, #0f172a);
+}
+
+.contact-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--ctx-border-light, #e2e8f0);
+}
+
+.contact-modal-title-group h3,
+.qr-modal-header h3 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 750;
+  color: var(--ctx-text-primary, #0f172a);
+}
+
+.contact-modal-subtitle {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--ctx-text-muted, #64748b);
+  line-height: 1.4;
+}
+
+.contact-modal-body {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 24px;
+  align-items: start;
+}
+
+.contact-modal-section-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ctx-text-muted, #64748b);
+  margin-bottom: 10px;
+}
+
+.contact-modal-channels {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.contact-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.contact-modal-links-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.contact-modal-location-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  color: var(--ctx-text-muted, #64748b);
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--ctx-bg-subtle, #f1f5f9);
+}
+
+.contact-modal-location-badge svg {
+  width: 14px;
+  height: 14px;
+  color: var(--ctx-accent, #2563eb);
+}
+
+.contact-modal-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border-left: 1px solid var(--ctx-border-light, #e2e8f0);
+  padding-left: 24px;
+}
+
+.dialog-close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--ctx-text-muted);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 120ms ease;
+}
+
+.dialog-close-btn:hover {
+  color: var(--ctx-primary);
+  background: var(--ctx-bg-subtle);
+}
+
+.dialog-close-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.qr-image-container {
+  background: #ffffff !important; /* Strictly white background for high QR scanning contrast [DEVIL-08] */
+  padding: 14px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--ctx-border-light, #e2e8f0);
+}
+
+.qr-modal-img {
+  display: block;
+  width: 168px;
+  height: 168px;
+}
+
+.qr-modal-desc {
+  margin: 12px 0 0;
+  font-size: 11.5px;
+  color: var(--ctx-text-muted);
+  line-height: 1.4;
+  max-width: 190px;
+}
+
+.contact-modal-footer,
+.qr-modal-actions {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ctx-border-light, #e2e8f0);
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Strictly hide QR code on mobile devices */
+@media (max-width: 680px) {
+  .contact-modal-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 18px;
+  }
+
+  .contact-modal-body {
+    display: block;
+  }
+
+  .contact-modal-qr {
+    display: none !important;
+  }
+
+  .contact-modal-footer {
+    justify-content: center;
+  }
+}
+
+/* Command Palette (Cmd+K / Ctrl+K) */
+.palette-dialog {
+  width: 580px;
+  max-width: 92vw;
+}
+
+.palette-card {
+  background: var(--ctx-bg-card);
+  border: 1px solid var(--ctx-border);
+  border-radius: 14px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+}
+
+.palette-search-row {
+  display: flex;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--ctx-border-light);
+  gap: 12px;
+  background: var(--ctx-bg-shell-header, var(--ctx-bg-card));
+}
+
+.palette-search-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--ctx-accent);
+  flex-shrink: 0;
+}
+
+.palette-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  color: var(--ctx-primary);
+  outline: none;
+  font-family: inherit;
+}
+
+.palette-input::placeholder {
+  color: var(--ctx-text-muted);
+  font-size: 13.5px;
+}
+
+.palette-kbd {
+  padding: 3px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  border: 1px solid var(--ctx-border);
+  border-radius: 5px;
+  color: var(--ctx-text-muted);
+  background: var(--ctx-bg-subtle);
+  font-family: monospace;
+  cursor: pointer;
+  user-select: none;
+}
+
+.palette-results {
+  overflow-y: auto;
+  max-height: 380px;
+  padding: 8px;
+}
+
+.palette-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--ctx-text-main);
+  transition: background 120ms ease;
+  user-select: none;
+}
+
+.palette-item:hover,
+.palette-item.is-selected {
+  background: var(--ctx-accent-soft);
+  color: var(--ctx-primary);
+}
+
+.palette-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.palette-item-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--ctx-accent);
+  flex-shrink: 0;
+}
+
+.palette-item-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--ctx-bg-subtle);
+  color: var(--ctx-text-muted);
+}
+
+.palette-item.is-selected .palette-item-badge {
+  background: var(--ctx-accent);
+  color: var(--ctx-on-accent);
+}
+
+.palette-empty {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--ctx-text-muted);
+  font-size: 13px;
+}
+
+.palette-footer {
+  padding: 10px 18px;
+  border-top: 1px solid var(--ctx-border-light);
+  background: var(--ctx-bg-subtle);
+  font-size: 11px;
+  color: var(--ctx-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.palette-tip kbd {
+  padding: 2px 5px;
+  border: 1px solid var(--ctx-border);
+  border-radius: 4px;
+  background: var(--ctx-bg-card);
+  font-size: 9.5px;
+  font-family: monospace;
+  margin: 0 2px;
+}
+
+/* Mobile Command Palette Top-Pinned Positioning */
+@media (max-width: 640px) {
+  .palette-dialog {
+    position: fixed;
+    top: 10px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    max-width: calc(100vw - 16px);
+    margin: 0 auto;
+    z-index: 1000;
+  }
+
+  .palette-card {
+    max-height: calc(100dvh - 20px);
+  }
+
+  .palette-results {
+    max-height: 42dvh;
+  }
+}

@@ -1,0 +1,24 @@
+# Private local files
+.private/
+
+# Internal SDLC research & runbook docs (kept local, excluded from public GitHub Pages)
+docs/02_evolucion/
+RB_SDLC_RFC_INVESTIGACION.md
+
+# Local IDE, formatter & linter configuration
+.vscode/
+.editorconfig
+.prettierrc.json
+.prettierignore
+.markdownlint.json
+.markdownlintignore
+
+# OS & backup files
+.DS_Store
+Thumbs.db
+*.bak
+*.bak.*
+
+# Local environment & secrets
+.env
+.env.*

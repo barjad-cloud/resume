@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# =============================================================================
+# Local Git pre-commit hook: auto-regenerates EN & ES PDFs and syncs
+# FECHA_ACTUALIZACION (app.js) + README.md whenever CV source files change.
+# Enable once per clone: git config core.hooksPath .githooks
+# =============================================================================
+
+set -euo pipefail
+
+ROOT_DIR="$(git rev-parse --show-toplevel)"
+CHANGED_FILES="$(git diff --cached --name-only --diff-filter=ACMR)"
+
+if [[ -z "${CHANGED_FILES}" ]]; then
+  exit 0
+fi
+
+NEEDS_PDF=0
+while IFS= read -r file; do
+  case "${file}" in
+    index.html|assets/css/*|assets/js/*|assets/img/*)
+      NEEDS_PDF=1
+      break
+      ;;
+  esac
+done <<< "${CHANGED_FILES}"
+
+if [[ "${NEEDS_PDF}" -eq 0 ]]; then
+  exit 0
+fi
+
+echo "[pre-commit] CV source changes detected — regenerating EN/ES PDFs..."
+"${ROOT_DIR}/scripts/generate-pdfs.sh"
+
+git add \
+  "${ROOT_DIR}/assets/js/app.js" \
+  "${ROOT_DIR}/README.md" \
+  "${ROOT_DIR}/assets/pdf/Daniel_Barja_Centeno_Resume_EN.pdf" \
+  "${ROOT_DIR}/assets/pdf/Daniel_Barja_Centeno_CV_ES.pdf"
